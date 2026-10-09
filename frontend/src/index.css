@@ -1,0 +1,151 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Default: Executive SOC Dark */
+  --color-bg-ground: #0b0f19;
+  --color-bg-card: rgba(17, 24, 39, 0.9);
+  --color-bg-card-hover: rgba(30, 41, 59, 0.7);
+  --color-bg-subtle: #162032;
+  --color-border: rgba(51, 65, 85, 0.65);
+  --color-border-light: rgba(71, 85, 105, 0.45);
+  --color-text-main: #f1f5f9;
+  --color-text-muted: #94a3b8;
+  --color-accent: #38bdf8;
+}
+
+html.cyber {
+  /* Cyber Stealth / Matrix */
+  --color-bg-ground: #040711;
+  --color-bg-card: rgba(10, 17, 32, 0.92);
+  --color-bg-card-hover: rgba(16, 27, 49, 0.85);
+  --color-bg-subtle: #0f1c30;
+  --color-border: rgba(30, 58, 95, 0.7);
+  --color-border-light: rgba(56, 189, 248, 0.3);
+  --color-text-main: #f0fdf4;
+  --color-text-muted: #64748b;
+  --color-accent: #06b6d4;
+}
+
+html.light {
+  /* Clean Enterprise Light */
+  --color-bg-ground: #f8fafc;
+  --color-bg-card: #ffffff;
+  --color-bg-card-hover: #f1f5f9;
+  --color-bg-subtle: #f1f5f9;
+  --color-border: #e2e8f0;
+  --color-border-light: #cbd5e1;
+  --color-text-main: #0f172a;
+  --color-text-muted: #64748b;
+  --color-accent: #0284c7;
+}
+
+body {
+  background-color: var(--color-bg-ground);
+  color: var(--color-text-main);
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  min-height: 100vh;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.card {
+  background-color: var(--color-bg-card);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--color-border);
+  border-radius: 0.875rem;
+  padding: 1.25rem;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.25);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card:hover {
+  border-color: var(--color-border-light);
+}
+
+.card-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.875rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.leaflet-container {
+  background: #0b0f19;
+  border-radius: 0.75rem;
+  overflow: hidden;
+}
+
+html.light .leaflet-container {
+  background: #e2e8f0;
+}
+
+/* Custom modern scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-muted);
+}
+
+/* Light Theme Contrast Refinements */
+html.light body {
+  color: #0f172a;
+}
+html.light .card {
+  box-shadow: 0 4px 18px -2px rgba(15, 23, 42, 0.06);
+}
+html.light .text-slate-100,
+html.light .text-slate-200 {
+  color: #0f172a;
+}
+html.light .text-slate-300 {
+  color: #1e293b;
+}
+html.light .text-slate-400 {
+  color: #475569;
+}
+html.light .text-slate-500 {
+  color: #64748b;
+}
+html.light .bg-slate-900\/40,
+html.light .bg-slate-900\/60,
+html.light .bg-slate-900\/70,
+html.light .bg-slate-900\/80,
+html.light .bg-slate-900\/95,
+html.light .bg-slate-950\/80,
+html.light .bg-slate-900 {
+  background-color: #f1f5f9;
+}
+html.light .bg-slate-800,
+html.light .bg-slate-800\/60,
+html.light .bg-slate-800\/80 {
+  background-color: #e2e8f0;
+}
+html.light .border-slate-800,
+html.light .border-slate-800\/80,
+html.light .border-slate-800\/60,
+html.light .border-slate-700,
+html.light .border-slate-700\/80,
+html.light .border-slate-700\/60 {
+  border-color: #cbd5e1;
+}
+
+

@@ -1,0 +1,295 @@
+{
+  "_note": "Demo data. All IPs are from RFC 5737 documentation ranges (not real hosts). CVEs/malware/techniques are real public identifiers.",
+  "threats": [
+    {
+      "indicator": "203.0.113.46",
+      "source": "threat_feed",
+      "confidence": 93,
+      "severity": "critical",
+      "malware": "Cobalt Strike",
+      "campaign": "Operation ShadowGate",
+      "hits": 88,
+      "techniques": [
+        "T1190",
+        "T1059.001",
+        "T1071",
+        "T1048"
+      ],
+      "cves": [
+        "CVE-2021-44228"
+      ],
+      "geo": {
+        "country": "Russia",
+        "lat": 55.75,
+        "lon": 37.62
+      },
+      "tags": [
+        "c2",
+        "beacon"
+      ]
+    },
+    {
+      "indicator": "203.0.113.77",
+      "source": "threat_feed",
+      "confidence": 86,
+      "severity": "high",
+      "malware": "Cobalt Strike",
+      "campaign": "Operation ShadowGate",
+      "hits": 52,
+      "techniques": [
+        "T1059.001",
+        "T1071",
+        "T1105"
+      ],
+      "cves": [
+        "CVE-2021-44228"
+      ],
+      "geo": {
+        "country": "Netherlands",
+        "lat": 52.37,
+        "lon": 4.90
+      },
+      "tags": [
+        "c2"
+      ]
+    },
+    {
+      "indicator": "198.51.100.23",
+      "source": "osint",
+      "confidence": 91,
+      "severity": "critical",
+      "malware": "QakBot",
+      "campaign": "Operation ShadowGate",
+      "hits": 71,
+      "techniques": [
+        "T1566",
+        "T1204",
+        "T1059.001",
+        "T1003",
+        "T1071",
+        "T1041"
+      ],
+      "cves": [],
+      "geo": {
+        "country": "Germany",
+        "lat": 50.11,
+        "lon": 8.68
+      },
+      "tags": [
+        "phishing",
+        "loader"
+      ]
+    },
+    {
+      "indicator": "198.51.100.140",
+      "source": "threat_feed",
+      "confidence": 78,
+      "severity": "high",
+      "malware": "Emotet",
+      "campaign": "Campaign Red Harvest",
+      "hits": 40,
+      "techniques": [
+        "T1566",
+        "T1204",
+        "T1059",
+        "T1547",
+        "T1071"
+      ],
+      "cves": [],
+      "geo": {
+        "country": "China",
+        "lat": 39.90,
+        "lon": 116.40
+      },
+      "tags": [
+        "phishing"
+      ]
+    },
+    {
+      "indicator": "192.0.2.15",
+      "source": "honeypot",
+      "confidence": 82,
+      "severity": "high",
+      "malware": "LockBit",
+      "campaign": "Campaign Red Harvest",
+      "hits": 64,
+      "techniques": [
+        "T1190",
+        "T1078",
+        "T1021",
+        "T1486"
+      ],
+      "cves": [
+        "CVE-2017-0144"
+      ],
+      "geo": {
+        "country": "Ukraine",
+        "lat": 50.45,
+        "lon": 30.52
+      },
+      "tags": [
+        "ransomware"
+      ]
+    },
+    {
+      "indicator": "192.0.2.201",
+      "source": "honeypot",
+      "confidence": 64,
+      "severity": "medium",
+      "malware": null,
+      "campaign": null,
+      "hits": 22,
+      "techniques": [
+        "T1190",
+        "T1082"
+      ],
+      "cves": [
+        "CVE-2024-3400"
+      ],
+      "geo": {
+        "country": "United States",
+        "lat": 38.90,
+        "lon": -77.04
+      },
+      "tags": [
+        "scanner"
+      ]
+    },
+    {
+      "indicator": "198.51.100.88",
+      "source": "osint",
+      "confidence": 55,
+      "severity": "medium",
+      "malware": null,
+      "campaign": null,
+      "hits": 9,
+      "techniques": [
+        "T1078"
+      ],
+      "cves": [],
+      "geo": {
+        "country": "Brazil",
+        "lat": -15.79,
+        "lon": -47.88
+      },
+      "tags": [
+        "bruteforce"
+      ]
+    },
+    {
+      "indicator": "203.0.113.200",
+      "source": "threat_feed",
+      "confidence": 35,
+      "severity": "low",
+      "malware": null,
+      "campaign": null,
+      "hits": 3,
+      "techniques": [],
+      "cves": [],
+      "geo": {
+        "country": "India",
+        "lat": 28.61,
+        "lon": 77.21
+      },
+      "tags": [
+        "suspicious"
+      ]
+    },
+    {
+      "indicator": "evil-update-cdn.example",
+      "indicator_type": "domain",
+      "source": "osint",
+      "confidence": 89,
+      "severity": "high",
+      "malware": "Emotet",
+      "campaign": "Campaign Red Harvest",
+      "hits": 47,
+      "techniques": [
+        "T1566",
+        "T1105",
+        "T1071"
+      ],
+      "cves": [],
+      "geo": {
+        "country": "Singapore",
+        "lat": 1.35,
+        "lon": 103.82
+      },
+      "tags": [
+        "phishing-domain"
+      ]
+    }
+  ],
+  "cves": [
+    {
+      "id": "CVE-2021-44228",
+      "cve_id": "CVE-2021-44228",
+      "cvss": 10.0,
+      "severity": "critical",
+      "affected_product": "Apache Log4j",
+      "description": "Log4Shell: remote code execution via JNDI lookup in Log4j 2."
+    },
+    {
+      "id": "CVE-2017-0144",
+      "cve_id": "CVE-2017-0144",
+      "cvss": 8.1,
+      "severity": "high",
+      "affected_product": "Microsoft SMBv1",
+      "description": "EternalBlue: SMBv1 remote code execution."
+    },
+    {
+      "id": "CVE-2024-3400",
+      "cve_id": "CVE-2024-3400",
+      "cvss": 10.0,
+      "severity": "critical",
+      "affected_product": "Palo Alto PAN-OS",
+      "description": "Command injection in GlobalProtect leading to unauthenticated RCE."
+    },
+    {
+      "id": "CVE-2023-4966",
+      "cve_id": "CVE-2023-4966",
+      "cvss": 9.4,
+      "severity": "critical",
+      "affected_product": "Citrix NetScaler",
+      "description": "Citrix Bleed: sensitive information disclosure enabling session hijacking."
+    }
+  ],
+  "assets": [
+    {
+      "id": "asset-web01",
+      "name": "web-prod-01",
+      "ip": "10.0.1.10",
+      "products": [
+        "Apache Log4j"
+      ],
+      "importance": 90
+    },
+    {
+      "id": "asset-fs01",
+      "name": "file-server-01",
+      "ip": "10.0.2.20",
+      "products": [
+        "Microsoft SMBv1"
+      ],
+      "importance": 75
+    },
+    {
+      "id": "asset-vpn01",
+      "name": "vpn-gateway",
+      "ip": "10.0.0.1",
+      "products": [
+        "Palo Alto PAN-OS"
+      ],
+      "importance": 95
+    },
+    {
+      "id": "asset-wks01",
+      "name": "hr-workstation-07",
+      "ip": "10.0.5.7",
+      "products": [
+        "Microsoft Office"
+      ],
+      "importance": 40
+    }
+  ]
+}
