@@ -14,7 +14,7 @@ AI-Powered Cyber Threat Intelligence and Risk Prioritization Platform
 Our solution is an AI-powered Cyber Threat Intelligence Platform that collects and correlates data from CVE databases, threat intelligence feeds, and MITRE ATT&CK. It identifies relationships between malicious IPs, vulnerabilities, malware, and attack techniques to detect potential threats. The platform assigns risk scores to prioritize critical threats and uses AI to explain threats and recommend defensive actions. A centralized dashboard visualizes threat intelligence and attack chains, helping security teams detect, analyze, and respond to cyber threats faster.
 
 ## 4. Architecture Diagram
-![Architecture Diagram](docs/architecture.png)
+![Architecture Diagram](docs/architecture.jpeg)
 
 Data Collection: Gather CVEs, malicious IPs/domains, threat intelligence feeds, and MITRE ATT&CK data.
 
