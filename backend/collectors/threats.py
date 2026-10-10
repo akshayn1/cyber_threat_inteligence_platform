@@ -29,7 +29,7 @@ def _type_of(value: str) -> str:
 
 
 def _severity(conf: int) -> str:
-    return "critical" if conf >= 90 else "high" if conf >= 75 else "medium" if conf >= 50 else "low"
+    return "critical" if conf >= 91 else "high" if conf >= 75 else "medium" if conf >= 50 else "low"
 
 
 def normalize(raw: dict) -> dict:

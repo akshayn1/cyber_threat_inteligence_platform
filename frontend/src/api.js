@@ -13,7 +13,10 @@ async function req(path, opts) {
 export const api = {
   health: () => req("/api/health"),
   stats: () => req("/api/stats"),
-  threats: () => req("/api/threats"),
+  threats: (opts = {}) => {
+    const q = new URLSearchParams(opts).toString();
+    return req(`/api/threats${q ? `?${q}` : ""}`);
+  },
   threat: (id) => req(`/api/threats/${id}`),
   alerts: () => req("/api/alerts"),
   cves: () => req("/api/cves"),
@@ -27,6 +30,43 @@ export const api = {
   },
   seed: () => req("/api/seed", { method: "POST" }),
   collect: (src) => req(`/api/collect/${src}`, { method: "POST" }),
+
+  // Allowlist & False Positive Protection
+  allowlist: () => req("/api/allowlist"),
+  addAllowlist: (item) =>
+    req("/api/allowlist", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(item) }),
+  deleteAllowlist: (id) => req(`/api/allowlist/${id}`, { method: "DELETE" }),
+  markFalsePositive: (threatId, reason = "Legitimate CDN or verified false alarm", penalizeSource = true) =>
+    req(`/api/threats/${threatId}/false-positive`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ reason, penalize_source: penalizeSource }),
+    }),
+  unmarkFalsePositive: (threatId) =>
+    req(`/api/threats/${threatId}/unmark-false-positive`, { method: "POST" }),
+  allowlistThreat: (threatId, reason) =>
+    req(`/api/threats/${threatId}/allowlist${reason ? `?reason=${encodeURIComponent(reason)}` : ""}`, { method: "POST" }),
+  sources: () => req("/api/sources"),
+
+  // Live Log Matching & Ingestion
+  matchLogsFile: (file) => {
+    const fd = new FormData();
+    fd.append("file", file);
+    return req("/api/logs/match", { method: "POST", body: fd });
+  },
+  matchLogsText: (logText) =>
+    req("/api/logs/match", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ log_text: logText }),
+    }),
+  simulateLogs: () => req("/api/logs/simulate", { method: "POST" }),
+  logMatches: () => req("/api/logs/matches"),
+  clearLogMatches: () => req("/api/logs/matches", { method: "DELETE" }),
+
+  // Export Clean Blocklist
+  exportBlocklistUrl: (excludeStale = true, excludeAllowlist = true) =>
+    `${BASE}/api/export/blocklist?format=txt&exclude_stale=${excludeStale}&exclude_allowlist=${excludeAllowlist}`,
 };
 
 export const SEV = {

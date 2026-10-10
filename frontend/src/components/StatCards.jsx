@@ -5,7 +5,9 @@ export default function StatCards({ stats }) {
     {
       label: "Total Threats",
       value: stats?.total_threats,
-      caption: "Correlated IoC indicators",
+      caption: stats?.stale_indicators
+        ? `${stats.stale_indicators} aging / stale indicators`
+        : "Correlated IoC indicators",
       color: "text-sky-400",
       bgIcon: "bg-sky-500/10 text-sky-400 border-sky-500/20",
       accentBorder: "border-sky-500/30",
@@ -14,7 +16,9 @@ export default function StatCards({ stats }) {
     {
       label: "Critical Threats",
       value: stats?.critical,
-      caption: "Urgent response required",
+      caption: stats?.false_positive_count
+        ? `${stats.false_positive_count} false positives suppressed`
+        : "Active urgent threats",
       color: "text-rose-400",
       bgIcon: "bg-rose-500/10 text-rose-400 border-rose-500/20",
       accentBorder: "border-rose-500/30",
@@ -23,21 +27,19 @@ export default function StatCards({ stats }) {
     {
       label: "Monitored CVEs",
       value: stats?.total_cves,
-      caption: stats?.cisa_kev_count
-        ? `${stats.cisa_kev_count} exploited in CISA KEV`
-        : "Active vulnerability mappings",
+      caption: `${stats?.cisa_kev_count ?? 0} CISA KEV · ${stats?.high_epss_count ?? 0} High EPSS`,
       color: "text-amber-400",
       bgIcon: "bg-amber-500/10 text-amber-400 border-amber-500/20",
       accentBorder: "border-amber-500/30",
       Icon: Bug,
     },
     {
-      label: "Active Campaigns",
-      value: stats?.campaigns,
-      caption: "Identified threat operations",
-      color: "text-purple-400",
-      bgIcon: "bg-purple-500/10 text-purple-400 border-purple-500/20",
-      accentBorder: "border-purple-500/30",
+      label: "Defense & Ingestion",
+      value: stats?.allowlist_count,
+      caption: `${stats?.allowlist_count ?? 0} protected · ${stats?.log_alert_count ?? 0} log hits`,
+      color: "text-emerald-400",
+      bgIcon: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
+      accentBorder: "border-emerald-500/30",
       Icon: Layers,
     },
   ];

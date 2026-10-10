@@ -9,7 +9,7 @@ import sys
 import copy
 from typing import Optional
 
-COLLECTIONS = ("threats", "cves", "assets")
+COLLECTIONS = ("threats", "cves", "assets", "allowlist", "log_alerts", "source_reputation")
 
 
 class MemoryStore:
@@ -19,15 +19,23 @@ class MemoryStore:
         self.data = {c: {} for c in COLLECTIONS}
 
     def list(self, coll):
-        return [copy.deepcopy(d) for d in self.data[coll].values()]
+        return [copy.deepcopy(d) for d in self.data.get(coll, {}).values()]
 
     def get(self, coll, _id) -> Optional[dict]:
-        d = self.data[coll].get(_id)
+        d = self.data.get(coll, {}).get(_id)
         return copy.deepcopy(d) if d else None
 
     def upsert(self, coll, doc):
+        if coll not in self.data:
+            self.data[coll] = {}
         self.data[coll][doc["id"]] = copy.deepcopy(doc)
         return doc
+
+    def delete(self, coll, _id) -> bool:
+        if coll in self.data and _id in self.data[coll]:
+            del self.data[coll][_id]
+            return True
+        return False
 
     def clear(self, coll=None):
         for c in ([coll] if coll else COLLECTIONS):
@@ -61,6 +69,10 @@ class MongoStore:
         body = {k: v for k, v in doc.items() if k != "id"}
         self.db[coll].replace_one({"_id": doc["id"]}, body, upsert=True)
         return doc
+
+    def delete(self, coll, _id) -> bool:
+        res = self.db[coll].delete_one({"_id": _id})
+        return res.deleted_count > 0
 
     def clear(self, coll=None):
         for c in ([coll] if coll else COLLECTIONS):

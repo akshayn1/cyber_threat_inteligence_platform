@@ -107,8 +107,21 @@ export default function Alerts({ alerts, selectedId, onSelect, newIds }) {
                     </span>
                   )}
                 </div>
-                <div className="mt-0.5 font-mono text-[11px] text-slate-400">
-                  {a.indicator}
+                <div className="mt-0.5 flex items-center gap-2 font-mono text-[11px] text-slate-400">
+                  <span>{a.indicator}</span>
+                  {a.aging_status && (
+                    <span
+                      className={`rounded px-1 py-0.2 text-[9px] font-semibold uppercase ${
+                        a.aging_status === "active"
+                          ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
+                          : a.aging_status === "aging"
+                          ? "bg-amber-500/10 text-amber-400 border border-amber-500/20"
+                          : "bg-slate-800 text-slate-400"
+                      }`}
+                    >
+                      {a.aging_status}
+                    </span>
+                  )}
                 </div>
               </div>
 

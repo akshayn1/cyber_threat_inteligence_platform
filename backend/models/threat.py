@@ -22,7 +22,12 @@ class Threat(BaseModel):
     hits: int = 1  # observed frequency (e.g. sightings / events)
     geo: Optional[Geo] = None
     first_seen: Optional[str] = None
+    last_seen: Optional[str] = None
     tags: List[str] = []
+    # False positive & allowlist protection
+    is_allowlisted: bool = False
+    is_false_positive: bool = False
+    fp_reason: Optional[str] = None
 
 
 class CVE(BaseModel):
@@ -39,6 +44,9 @@ class CVE(BaseModel):
     required_action: Optional[str] = None
     due_date: Optional[str] = None
     cwes: List[str] = []
+    # EPSS (Exploit Prediction Scoring System)
+    epss: float = 0.0
+    epss_percentile: float = 0.0
 
 
 class Asset(BaseModel):
@@ -46,6 +54,24 @@ class Asset(BaseModel):
     ip: Optional[str] = None
     products: List[str] = []
     importance: int = Field(50, ge=0, le=100)
+
+
+class AllowlistItem(BaseModel):
+    id: Optional[str] = None
+    indicator: str
+    indicator_type: str = "ip"  # ip, cidr, domain
+    reason: str = "Legitimate infrastructure / CDN"
+    added_at: Optional[str] = None
+
+
+class FalsePositiveRequest(BaseModel):
+    reason: str = "Legitimate CDN or verified false alarm"
+    penalize_source: bool = True
+
+
+class LogMatchRequest(BaseModel):
+    log_text: Optional[str] = None
+    log_format: str = "auto"  # auto, suricata, zeek, wazuh, firewall
 
 
 class AnalyzeRequest(BaseModel):
@@ -58,3 +84,4 @@ class ImportBundle(BaseModel):
     threats: List[dict] = []
     cves: List[dict] = []
     assets: List[dict] = []
+    allowlist: List[dict] = []

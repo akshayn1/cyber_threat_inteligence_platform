@@ -17,6 +17,11 @@ import {
   Layers,
   ExternalLink,
   ChevronRight,
+  Clock,
+  ShieldCheck,
+  Flag,
+  RotateCcw,
+  Zap,
 } from "lucide-react";
 
 const WEIGHTS = {
@@ -46,22 +51,73 @@ function Section({ icon: Icon, title, badge, children }) {
   );
 }
 
-export default function ThreatDetail({ id }) {
+export default function ThreatDetail({ id, onActionComplete }) {
   const [data, setData] = useState(null);
   const [ai, setAi] = useState(null);
   const [aiLoading, setAiLoading] = useState(false);
+  const [actionLoading, setActionLoading] = useState(false);
   const [error, setError] = useState(null);
   const [copied, setCopied] = useState(false);
   const [completedActions, setCompletedActions] = useState(new Set());
+  const [showFpModal, setShowFpModal] = useState(false);
+  const [fpReason, setFpReason] = useState("Legitimate CDN / shared hosting");
+
+  const loadThreat = () => {
+    if (!id) return;
+    setError(null);
+    api.threat(id).then(setData).catch((e) => setError(e.message));
+  };
 
   useEffect(() => {
     if (!id) return;
     setData(null);
     setAi(null);
     setError(null);
+    setShowFpModal(false);
     setCompletedActions(new Set());
-    api.threat(id).then(setData).catch((e) => setError(e.message));
+    loadThreat();
   }, [id]);
+
+  const handleMarkFalsePositive = async () => {
+    setActionLoading(true);
+    try {
+      await api.markFalsePositive(id, fpReason, true);
+      setShowFpModal(false);
+      loadThreat();
+      if (onActionComplete) onActionComplete();
+    } catch (e) {
+      alert("Error: " + e.message);
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleUnmarkFalsePositive = async () => {
+    setActionLoading(true);
+    try {
+      await api.unmarkFalsePositive(id);
+      loadThreat();
+      if (onActionComplete) onActionComplete();
+    } catch (e) {
+      alert("Error: " + e.message);
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleAddToAllowlist = async () => {
+    if (!confirm(`Add ${data.indicator} to the Protected Allowlist? It will be excluded from blocking feeds and alerts.`)) return;
+    setActionLoading(true);
+    try {
+      await api.allowlistThreat(id, "Protected legitimate infrastructure");
+      loadThreat();
+      if (onActionComplete) onActionComplete();
+    } catch (e) {
+      alert("Error: " + e.message);
+    } finally {
+      setActionLoading(false);
+    }
+  };
 
   const copyIndicator = () => {
     if (!data?.indicator) return;
@@ -220,7 +276,154 @@ export default function ThreatDetail({ id }) {
             </div>
           </div>
         </div>
+
+        {/* Protection Actions Toolbar */}
+        <div className="flex flex-wrap items-center gap-2">
+          {!data.is_allowlisted && (
+            <button
+              onClick={handleAddToAllowlist}
+              disabled={actionLoading}
+              title="Add indicator to protected allowlist (suppresses blocking and alerts)"
+              className="flex items-center gap-1.5 rounded-lg border border-emerald-500/40 bg-emerald-500/10 px-2.5 py-1.5 text-xs font-semibold text-emerald-300 hover:bg-emerald-500/20 transition disabled:opacity-50"
+            >
+              <ShieldCheck className="h-3.5 w-3.5" />
+              <span>Allowlist</span>
+            </button>
+          )}
+
+          {data.is_false_positive ? (
+            <button
+              onClick={handleUnmarkFalsePositive}
+              disabled={actionLoading}
+              title="Restore indicator from false positive state"
+              className="flex items-center gap-1.5 rounded-lg border border-slate-700 bg-slate-800 px-2.5 py-1.5 text-xs font-semibold text-slate-300 hover:bg-slate-700 transition disabled:opacity-50"
+            >
+              <RotateCcw className="h-3.5 w-3.5" />
+              <span>Unmark FP</span>
+            </button>
+          ) : (
+            <button
+              onClick={() => setShowFpModal(true)}
+              disabled={actionLoading}
+              title="Mark indicator as false positive and lower source trust score"
+              className="flex items-center gap-1.5 rounded-lg border border-amber-500/40 bg-amber-500/10 px-2.5 py-1.5 text-xs font-semibold text-amber-300 hover:bg-amber-500/20 transition disabled:opacity-50"
+            >
+              <Flag className="h-3.5 w-3.5" />
+              <span>Mark False Positive</span>
+            </button>
+          )}
+        </div>
       </div>
+
+      {/* False Positive Reason Modal Prompt */}
+      {showFpModal && (
+        <div className="rounded-xl border border-amber-500/40 bg-amber-950/30 p-3 text-xs space-y-2">
+          <div className="flex items-center gap-1.5 font-bold text-amber-400">
+            <AlertTriangle className="h-4 w-4" />
+            <span>Mark as False Positive & Penalize Source Trust</span>
+          </div>
+          <p className="text-slate-300">
+            This flags the indicator as benign, suppresses emergency alerts, and automatically applies a 15% trust penalty to feed source <span className="font-semibold text-sky-400">{data.source}</span>.
+          </p>
+          <input
+            type="text"
+            value={fpReason}
+            onChange={(e) => setFpReason(e.target.value)}
+            placeholder="Reason (e.g. Shared hosting, verified CDN edge node, benign internal service)"
+            className="w-full rounded border border-amber-500/30 bg-slate-900 px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none"
+          />
+          <div className="flex justify-end gap-2 pt-1">
+            <button
+              onClick={() => setShowFpModal(false)}
+              className="rounded bg-slate-800 px-3 py-1 text-slate-400 hover:text-slate-200"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleMarkFalsePositive}
+              disabled={actionLoading}
+              className="rounded bg-amber-500 px-3 py-1 font-semibold text-slate-950 hover:bg-amber-400"
+            >
+              {actionLoading ? "Updating…" : "Confirm False Positive"}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Prominent Allowlist Banner */}
+      {data.is_allowlisted && (
+        <div className="flex items-center gap-2.5 rounded-xl border border-emerald-500/40 bg-emerald-950/20 p-3 text-xs text-emerald-200">
+          <ShieldCheck className="h-5 w-5 text-emerald-400 shrink-0" />
+          <div>
+            <span className="font-bold uppercase tracking-wider text-emerald-400">Protected Under Allowlist: </span>
+            <span>Indicator is verified legitimate infrastructure or CDN. It is excluded from blocklists and alerting to prevent operational outages.</span>
+          </div>
+        </div>
+      )}
+
+      {/* Prominent False Positive Banner */}
+      {data.is_false_positive && (
+        <div className="flex items-center gap-2.5 rounded-xl border border-amber-500/40 bg-amber-950/20 p-3 text-xs text-amber-200">
+          <Flag className="h-5 w-5 text-amber-400 shrink-0" />
+          <div>
+            <span className="font-bold uppercase tracking-wider text-amber-400">Flagged False Positive: </span>
+            <span>{data.fp_reason || "Analyst verified false alarm"} • Source trust penalized.</span>
+          </div>
+        </div>
+      )}
+
+      {/* Indicator Aging & Lifecycle Section */}
+      {a.aging && (
+        <Section
+          icon={Clock}
+          title="Indicator Lifecycle & Aging"
+          badge={`${a.aging.status.toUpperCase()} (${a.aging.age_days}d old)`}
+        >
+          <div className="space-y-2.5">
+            <div className="flex flex-wrap items-center justify-between text-xs gap-2">
+              <div className="flex items-center gap-2">
+                <span className="text-slate-400">Decay Half-Life:</span>
+                <span className="font-mono font-semibold text-sky-400">{a.aging.half_life_days} days ({data.indicator_type})</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-slate-400">Confidence Decay:</span>
+                <span className="font-mono font-bold text-slate-200">
+                  {a.aging.initial_confidence}% → <span className={a.aging.is_stale ? "text-amber-400 font-bold" : "text-emerald-400"}>{a.aging.aged_confidence}%</span>
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-slate-400">Expires in:</span>
+                <span className="font-mono text-slate-300">{a.aging.expires_in_days} days</span>
+              </div>
+            </div>
+
+            <div className="space-y-1">
+              <div className="flex items-center justify-between text-[11px] text-slate-400">
+                <span>Confidence Retention</span>
+                <span className="font-mono">{Math.round(a.aging.decay_factor * 100)}%</span>
+              </div>
+              <div className="h-2 w-full rounded-full bg-slate-800 overflow-hidden">
+                <div
+                  className={`h-full rounded-full transition-all duration-500 ${
+                    a.aging.status === "active"
+                      ? "bg-emerald-400"
+                      : a.aging.status === "aging"
+                      ? "bg-amber-400"
+                      : "bg-rose-500"
+                  }`}
+                  style={{ width: `${Math.round(a.aging.decay_factor * 100)}%` }}
+                />
+              </div>
+            </div>
+
+            {a.aging.is_stale && (
+              <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 p-2 text-xs text-amber-200">
+                ⚠ Indicator has aged past its half-life. Blocking stale IP blocklists can cause false positives as dynamic IPs get recycled.
+              </div>
+            )}
+          </div>
+        </Section>
+      )}
 
       {/* Evidence Section */}
       <Section icon={FileText} title="Telemetry Evidence" badge={`${a.evidence?.length || 0} findings`}>
@@ -293,6 +496,11 @@ export default function ThreatDetail({ id }) {
                     {c.in_kev && (
                       <span className="flex items-center gap-1 rounded border border-amber-500/40 bg-amber-500/15 px-1.5 py-0.2 font-mono text-[9px] font-extrabold uppercase text-amber-300">
                         ⚡ CISA KEV (Exploited)
+                      </span>
+                    )}
+                    {c.epss !== undefined && c.epss > 0 && (
+                      <span className="flex items-center gap-1 rounded border border-purple-500/40 bg-purple-500/15 px-1.5 py-0.2 font-mono text-[9px] font-extrabold uppercase text-purple-300" title={`Exploit Prediction: ${Math.round(c.epss * 1000) / 10}% likelihood of weaponization`}>
+                        📊 EPSS {Math.round(c.epss * 1000) / 10}% ({Math.round(c.epss_percentile * 1000) / 10}th %ile)
                       </span>
                     )}
                     {c.ransomware_campaign && (

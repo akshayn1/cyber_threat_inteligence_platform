@@ -6,6 +6,8 @@ import Alerts from "./components/Alerts";
 import Charts from "./components/Charts";
 import ThreatDetail from "./components/ThreatDetail";
 import ImportPanel from "./components/ImportPanel";
+import LiveLogHunter from "./components/LiveLogHunter";
+import AllowlistManager from "./components/AllowlistManager";
 import {
   ShieldCheck,
   RefreshCw,
@@ -17,6 +19,8 @@ import {
   AlertTriangle,
   ArrowRight,
   X,
+  Layers,
+  Sparkles,
 } from "lucide-react";
 
 const THEMES = [
@@ -35,6 +39,8 @@ export default function App() {
   const [error, setError] = useState(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [theme, setTheme] = useState(() => localStorage.getItem("sentinel_theme") || "dark");
+  const [showLogHunter, setShowLogHunter] = useState(false);
+  const [showAllowlist, setShowAllowlist] = useState(false);
 
   // Apply theme to html root
   useEffect(() => {
@@ -130,6 +136,34 @@ export default function App() {
         {/* Global Toolbar & Theme Switcher */}
         <div className="flex flex-wrap items-center gap-2.5">
           <ImportPanel onImported={onImported} />
+
+          {/* Live Log Matcher Button */}
+          <button
+            onClick={() => setShowLogHunter(true)}
+            className="flex items-center gap-1.5 rounded-lg border border-sky-500/40 bg-sky-500/10 px-3 py-1.5 text-xs font-semibold text-sky-300 shadow-sm transition hover:bg-sky-500/20"
+          >
+            <Terminal className="h-3.5 w-3.5 text-sky-400" />
+            <span>Live Log Matcher</span>
+            {stats?.log_alert_count > 0 && (
+              <span className="rounded-full bg-rose-500 px-1.5 py-0.2 text-[9px] font-extrabold text-white">
+                {stats.log_alert_count}
+              </span>
+            )}
+          </button>
+
+          {/* Allowlist & Protection Button */}
+          <button
+            onClick={() => setShowAllowlist(true)}
+            className="flex items-center gap-1.5 rounded-lg border border-emerald-500/40 bg-emerald-500/10 px-3 py-1.5 text-xs font-semibold text-emerald-300 shadow-sm transition hover:bg-emerald-500/20"
+          >
+            <ShieldCheck className="h-3.5 w-3.5 text-emerald-400" />
+            <span>Allowlist & Trust</span>
+            {stats?.allowlist_count > 0 && (
+              <span className="rounded-full bg-emerald-500/30 px-1.5 py-0.2 text-[9px] font-bold text-emerald-300">
+                {stats.allowlist_count}
+              </span>
+            )}
+          </button>
 
           <div className="h-5 w-[1px] bg-slate-800 mx-1 hidden sm:block" />
 
@@ -237,9 +271,29 @@ export default function App() {
           <Charts stats={stats} />
         </div>
         <div className="lg:sticky lg:top-4 self-start">
-          <ThreatDetail id={selected} />
+          <ThreatDetail id={selected} onActionComplete={load} />
         </div>
       </div>
+
+      {/* Live Log Matcher Modal */}
+      <LiveLogHunter
+        isOpen={showLogHunter}
+        onClose={() => {
+          setShowLogHunter(false);
+          load();
+        }}
+        onSelectThreat={setSelected}
+      />
+
+      {/* Allowlist & Trust Manager Modal */}
+      <AllowlistManager
+        isOpen={showAllowlist}
+        onClose={() => {
+          setShowAllowlist(false);
+          load();
+        }}
+        onRefresh={load}
+      />
 
       {/* Professional Footer
       <footer className="mt-6 flex flex-wrap items-center justify-between border-t border-slate-800/60 pt-4 text-[11px] text-slate-500">
