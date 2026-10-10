@@ -1,0 +1,126 @@
+{
+  "_description": "Cryptominer & Cloud Exploitation IoCs — Attacks targeting cloud infrastructure, Docker, Kubernetes, and exposed APIs",
+  "threats": [
+    {
+      "indicator": "198.51.100.166",
+      "source": "cloud_telemetry",
+      "confidence": 88,
+      "severity": "high",
+      "malware": "XMRig",
+      "campaign": "CloudJack Miners",
+      "hits": 210,
+      "techniques": ["T1190", "T1059.004", "T1496", "T1105"],
+      "cves": ["CVE-2019-5736"],
+      "geo": { "country": "Ukraine", "lat": 48.38, "lon": 31.17 },
+      "tags": ["cryptominer", "docker-escape", "cloud-abuse"]
+    },
+    {
+      "indicator": "203.0.113.210",
+      "source": "cloud_telemetry",
+      "confidence": 84,
+      "severity": "high",
+      "malware": "XMRig",
+      "campaign": "CloudJack Miners",
+      "hits": 148,
+      "techniques": ["T1610", "T1496", "T1059.004"],
+      "cves": [],
+      "geo": { "country": "Germany", "lat": 52.52, "lon": 13.41 },
+      "tags": ["cryptominer", "kubernetes-abuse", "container-deployment"]
+    },
+    {
+      "indicator": "mining-pool-proxy.example",
+      "indicator_type": "domain",
+      "source": "osint",
+      "confidence": 91,
+      "severity": "high",
+      "malware": "XMRig",
+      "campaign": "CloudJack Miners",
+      "hits": 430,
+      "techniques": ["T1496", "T1071"],
+      "cves": [],
+      "geo": { "country": "Netherlands", "lat": 52.37, "lon": 4.90 },
+      "tags": ["mining-pool", "stratum-proxy", "monero"]
+    },
+    {
+      "indicator": "192.0.2.77",
+      "source": "honeypot",
+      "confidence": 80,
+      "severity": "high",
+      "malware": "Kinsing",
+      "campaign": "CloudJack Miners",
+      "hits": 95,
+      "techniques": ["T1190", "T1059.004", "T1496", "T1070.004"],
+      "cves": ["CVE-2023-46604"],
+      "geo": { "country": "Romania", "lat": 44.43, "lon": 26.10 },
+      "tags": ["cryptominer", "apache-activemq", "kinsing"]
+    },
+    {
+      "indicator": "198.51.100.33",
+      "source": "cloud_telemetry",
+      "confidence": 65,
+      "severity": "medium",
+      "malware": null,
+      "campaign": null,
+      "hits": 32,
+      "techniques": ["T1190", "T1078.004"],
+      "cves": ["CVE-2023-44487"],
+      "geo": { "country": "Brazil", "lat": -23.55, "lon": -46.63 },
+      "tags": ["api-abuse", "enumeration", "cloud-recon"]
+    },
+    {
+      "indicator": "192.0.2.250",
+      "source": "honeypot",
+      "confidence": 40,
+      "severity": "low",
+      "malware": null,
+      "campaign": null,
+      "hits": 5,
+      "techniques": ["T1595.002"],
+      "cves": [],
+      "geo": { "country": "India", "lat": 19.08, "lon": 72.88 },
+      "tags": ["scanner", "shodan-like"]
+    }
+  ],
+  "cves": [
+    {
+      "id": "CVE-2019-5736",
+      "cve_id": "CVE-2019-5736",
+      "cvss": 8.6,
+      "severity": "high",
+      "affected_product": "runc (Docker/Kubernetes)",
+      "description": "Container escape via runc allowing host OS code execution from within a container."
+    },
+    {
+      "id": "CVE-2023-46604",
+      "cve_id": "CVE-2023-46604",
+      "cvss": 10.0,
+      "severity": "critical",
+      "affected_product": "Apache ActiveMQ",
+      "description": "Remote code execution in Apache ActiveMQ via serialized class info in the OpenWire protocol. Mass exploited for cryptomining."
+    },
+    {
+      "id": "CVE-2023-44487",
+      "cve_id": "CVE-2023-44487",
+      "cvss": 7.5,
+      "severity": "high",
+      "affected_product": "HTTP/2 Protocol (multiple implementations)",
+      "description": "HTTP/2 Rapid Reset: protocol-level DDoS attack exploiting stream cancellation to overwhelm servers."
+    }
+  ],
+  "assets": [
+    {
+      "id": "asset-k8s-cluster",
+      "name": "k8s-prod-cluster-01",
+      "ip": "10.0.20.1",
+      "products": ["runc (Docker/Kubernetes)"],
+      "importance": 92
+    },
+    {
+      "id": "asset-mq01",
+      "name": "activemq-broker-01",
+      "ip": "10.0.8.15",
+      "products": ["Apache ActiveMQ"],
+      "importance": 78
+    }
+  ]
+}

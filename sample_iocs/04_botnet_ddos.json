@@ -1,0 +1,131 @@
+{
+  "_description": "Botnet & DDoS IoCs — Mirai/Mozi botnet infrastructure targeting IoT and network edge devices",
+  "threats": [
+    {
+      "indicator": "203.0.113.15",
+      "source": "honeypot",
+      "confidence": 90,
+      "severity": "critical",
+      "malware": "Mirai",
+      "campaign": "Botnet Tsunami",
+      "hits": 320,
+      "techniques": ["T1190", "T1110.001", "T1498", "T1059.004"],
+      "cves": ["CVE-2023-1389"],
+      "geo": { "country": "Taiwan", "lat": 25.03, "lon": 121.57 },
+      "tags": ["botnet", "iot-exploitation", "ddos"]
+    },
+    {
+      "indicator": "198.51.100.201",
+      "source": "honeypot",
+      "confidence": 88,
+      "severity": "high",
+      "malware": "Mirai",
+      "campaign": "Botnet Tsunami",
+      "hits": 198,
+      "techniques": ["T1110.001", "T1498.001", "T1059.004"],
+      "cves": ["CVE-2023-1389"],
+      "geo": { "country": "Indonesia", "lat": -6.21, "lon": 106.85 },
+      "tags": ["botnet", "telnet-bruteforce", "ddos-amplification"]
+    },
+    {
+      "indicator": "192.0.2.44",
+      "source": "honeypot",
+      "confidence": 85,
+      "severity": "high",
+      "malware": "Mozi",
+      "campaign": "Botnet Tsunami",
+      "hits": 156,
+      "techniques": ["T1190", "T1059.004", "T1571", "T1105"],
+      "cves": ["CVE-2017-17215"],
+      "geo": { "country": "Bangladesh", "lat": 23.81, "lon": 90.41 },
+      "tags": ["botnet", "p2p-botnet", "dht"]
+    },
+    {
+      "indicator": "203.0.113.78",
+      "source": "threat_feed",
+      "confidence": 82,
+      "severity": "high",
+      "malware": "Mirai",
+      "campaign": "Botnet Tsunami",
+      "hits": 89,
+      "techniques": ["T1498", "T1498.001"],
+      "cves": [],
+      "geo": { "country": "South Korea", "lat": 37.57, "lon": 126.98 },
+      "tags": ["ddos-reflector", "amplification"]
+    },
+    {
+      "indicator": "botnet-cnc-relay.example",
+      "indicator_type": "domain",
+      "source": "osint",
+      "confidence": 79,
+      "severity": "high",
+      "malware": "Mirai",
+      "campaign": "Botnet Tsunami",
+      "hits": 67,
+      "techniques": ["T1583.001", "T1071", "T1571"],
+      "cves": [],
+      "geo": { "country": "Argentina", "lat": -34.60, "lon": -58.38 },
+      "tags": ["c2-domain", "dynamic-dns"]
+    },
+    {
+      "indicator": "198.51.100.99",
+      "source": "honeypot",
+      "confidence": 55,
+      "severity": "medium",
+      "malware": null,
+      "campaign": null,
+      "hits": 44,
+      "techniques": ["T1595.002", "T1046"],
+      "cves": [],
+      "geo": { "country": "Egypt", "lat": 30.04, "lon": 31.24 },
+      "tags": ["scanner", "port-scanning", "reconnaissance"]
+    },
+    {
+      "indicator": "192.0.2.100",
+      "source": "honeypot",
+      "confidence": 42,
+      "severity": "low",
+      "malware": null,
+      "campaign": null,
+      "hits": 7,
+      "techniques": ["T1595"],
+      "cves": [],
+      "geo": { "country": "Philippines", "lat": 14.60, "lon": 120.98 },
+      "tags": ["suspicious", "scanning"]
+    }
+  ],
+  "cves": [
+    {
+      "id": "CVE-2023-1389",
+      "cve_id": "CVE-2023-1389",
+      "cvss": 8.8,
+      "severity": "high",
+      "affected_product": "TP-Link Archer AX21",
+      "description": "Command injection in TP-Link Archer AX21 router firmware allowing unauthenticated RCE. Widely exploited by Mirai variants."
+    },
+    {
+      "id": "CVE-2017-17215",
+      "cve_id": "CVE-2017-17215",
+      "cvss": 8.8,
+      "severity": "high",
+      "affected_product": "Huawei HG532 Router",
+      "description": "Remote code execution in Huawei HG532 router via SOAP interface, exploited by Satori/Mozi botnets."
+    }
+  ],
+  "assets": [
+    {
+      "id": "asset-iot-gw",
+      "name": "iot-gateway-building-A",
+      "ip": "10.0.10.1",
+      "products": ["TP-Link Archer AX21"],
+      "importance": 55
+    },
+    {
+      "id": "asset-edge-router",
+      "name": "edge-router-branch-02",
+      "ip": "10.0.11.1",
+      "products": ["Huawei HG532 Router"],
+      "importance": 60
+    }
+  ]
+}

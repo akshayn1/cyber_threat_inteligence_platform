@@ -1,0 +1,142 @@
+{
+  "_description": "APT Espionage IoCs — State-sponsored threat actors (APT29/Cozy Bear style) targeting government and defense",
+  "threats": [
+    {
+      "indicator": "198.51.100.177",
+      "source": "government_cert",
+      "confidence": 94,
+      "severity": "critical",
+      "malware": "SunBurst",
+      "campaign": "Operation Phantom Diplomat",
+      "hits": 112,
+      "techniques": ["T1195.002", "T1071.001", "T1027", "T1053", "T1003.001"],
+      "cves": ["CVE-2020-10148"],
+      "geo": { "country": "North Korea", "lat": 39.03, "lon": 125.75 },
+      "tags": ["apt", "supply-chain", "espionage", "nation-state"]
+    },
+    {
+      "indicator": "203.0.113.55",
+      "source": "government_cert",
+      "confidence": 91,
+      "severity": "critical",
+      "malware": "PlugX",
+      "campaign": "Operation Phantom Diplomat",
+      "hits": 87,
+      "techniques": ["T1566.001", "T1204.002", "T1055", "T1071.001", "T1041"],
+      "cves": ["CVE-2023-23397"],
+      "geo": { "country": "China", "lat": 31.23, "lon": 121.47 },
+      "tags": ["apt", "spearphishing", "dll-sideloading"]
+    },
+    {
+      "indicator": "cozy-update.example",
+      "indicator_type": "domain",
+      "source": "government_cert",
+      "confidence": 89,
+      "severity": "high",
+      "malware": "WellMess",
+      "campaign": "Operation Phantom Diplomat",
+      "hits": 56,
+      "techniques": ["T1583.001", "T1071", "T1573", "T1132"],
+      "cves": [],
+      "geo": { "country": "Latvia", "lat": 56.95, "lon": 24.11 },
+      "tags": ["c2-domain", "encrypted-c2", "apt29"]
+    },
+    {
+      "indicator": "192.0.2.31",
+      "source": "honeypot",
+      "confidence": 84,
+      "severity": "high",
+      "malware": "Brute Ratel",
+      "campaign": "Operation Phantom Diplomat",
+      "hits": 34,
+      "techniques": ["T1059.001", "T1055.012", "T1134", "T1070.004"],
+      "cves": [],
+      "geo": { "country": "Iran", "lat": 35.69, "lon": 51.39 },
+      "tags": ["red-team-tool", "evasion", "process-injection"]
+    },
+    {
+      "indicator": "a7b9c2d4e6f8012345678901234567890123456789abcdef0123456789abcdef",
+      "indicator_type": "hash",
+      "source": "malware_sandbox",
+      "confidence": 95,
+      "severity": "critical",
+      "malware": "PlugX",
+      "campaign": "Operation Phantom Diplomat",
+      "hits": 19,
+      "techniques": ["T1055", "T1574.002", "T1027.002"],
+      "cves": [],
+      "geo": null,
+      "tags": ["backdoor", "dll-sideload-payload", "obfuscated"]
+    },
+    {
+      "indicator": "198.51.100.220",
+      "source": "osint",
+      "confidence": 72,
+      "severity": "high",
+      "malware": null,
+      "campaign": "Operation Phantom Diplomat",
+      "hits": 18,
+      "techniques": ["T1190", "T1078.004"],
+      "cves": ["CVE-2023-46805", "CVE-2024-21887"],
+      "geo": { "country": "Vietnam", "lat": 21.03, "lon": 105.85 },
+      "tags": ["vpn-exploitation", "initial-access"]
+    }
+  ],
+  "cves": [
+    {
+      "id": "CVE-2023-23397",
+      "cve_id": "CVE-2023-23397",
+      "cvss": 9.8,
+      "severity": "critical",
+      "affected_product": "Microsoft Outlook",
+      "description": "NTLM relay attack via crafted Outlook email requiring no user interaction. Exploited by Russian APT groups."
+    },
+    {
+      "id": "CVE-2020-10148",
+      "cve_id": "CVE-2020-10148",
+      "cvss": 9.8,
+      "severity": "critical",
+      "affected_product": "SolarWinds Orion",
+      "description": "Authentication bypass in SolarWinds Orion API, exploited in the SUNBURST supply-chain attack."
+    },
+    {
+      "id": "CVE-2023-46805",
+      "cve_id": "CVE-2023-46805",
+      "cvss": 8.2,
+      "severity": "high",
+      "affected_product": "Ivanti Connect Secure VPN",
+      "description": "Authentication bypass in Ivanti VPN allowing access to restricted resources without credentials."
+    },
+    {
+      "id": "CVE-2024-21887",
+      "cve_id": "CVE-2024-21887",
+      "cvss": 9.1,
+      "severity": "critical",
+      "affected_product": "Ivanti Connect Secure VPN",
+      "description": "Command injection in Ivanti Connect Secure web components, chained with CVE-2023-46805 for unauthenticated RCE."
+    }
+  ],
+  "assets": [
+    {
+      "id": "asset-mail01",
+      "name": "exchange-server-01",
+      "ip": "10.0.1.25",
+      "products": ["Microsoft Outlook", "Microsoft Exchange"],
+      "importance": 92
+    },
+    {
+      "id": "asset-vpn02",
+      "name": "ivanti-vpn-gateway",
+      "ip": "10.0.0.2",
+      "products": ["Ivanti Connect Secure VPN"],
+      "importance": 96
+    },
+    {
+      "id": "asset-solar01",
+      "name": "solarwinds-monitor",
+      "ip": "10.0.4.10",
+      "products": ["SolarWinds Orion"],
+      "importance": 88
+    }
+  ]
+}

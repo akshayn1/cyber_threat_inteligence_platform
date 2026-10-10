@@ -32,6 +32,13 @@ class CVE(BaseModel):
     affected_product: str = "unknown"
     description: str = ""
     published: Optional[str] = None
+    # CISA KEV fields
+    in_kev: bool = False
+    kev_date_added: Optional[str] = None
+    ransomware_campaign: bool = False
+    required_action: Optional[str] = None
+    due_date: Optional[str] = None
+    cwes: List[str] = []
 
 
 class Asset(BaseModel):

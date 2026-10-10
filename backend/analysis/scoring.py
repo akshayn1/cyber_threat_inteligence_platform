@@ -29,10 +29,18 @@ def compute(threat: dict, ctx: dict) -> dict:
     """ctx: related_cves, exposed_assets, campaign_size, chain_strength"""
     cvss_vals = [c.get("cvss", 0) for c in ctx["related_cves"]]
     exposed = ctx["exposed_assets"]
+    has_kev = any(c.get("in_kev") for c in ctx["related_cves"])
+    has_ransomware = any(c.get("ransomware_campaign") for c in ctx["related_cves"])
+
+    base_vuln = int(max(cvss_vals) * 10) if cvss_vals else 0
+    if has_ransomware:
+        base_vuln = 100
+    elif has_kev:
+        base_vuln = min(100, max(base_vuln, 85) + 10)
 
     components = {
         "reputation": reputation_score(threat, ctx["campaign_size"]),
-        "vulnerability": int(max(cvss_vals) * 10) if cvss_vals else 0,
+        "vulnerability": base_vuln,
         "confidence": int(threat.get("confidence", 0)),
         "frequency": min(100, int(threat.get("hits", 0) * 100 / 60)),  # 60 sightings = 100
         "asset": max((a["importance"] for a in exposed), default=30),
@@ -49,7 +57,13 @@ def compute(threat: dict, ctx: dict) -> dict:
     if ctx["chain_strength"] >= 3:
         rules.append(f"ATT&CK techniques form a {ctx['chain_strength']}-stage attack chain (+5)")
         score += 5
-    if exposed and (threat.get("malware") or threat.get("confidence", 0) > 70):
+    if has_kev:
+        rules.append("Exploited in the wild (CISA KEV Catalog) -> +10 risk boost")
+        score += 10
+    if has_ransomware:
+        rules.append("Known ransomware campaign weaponization (CISA KEV) -> CRITICAL floor")
+        score = max(score, 88)
+    if exposed and (threat.get("malware") or threat.get("confidence", 0) > 70 or has_kev):
         rules.append("Malicious indicator + vulnerable internal asset -> CRITICAL floor")
         score = max(score, 85)
 
@@ -68,7 +82,13 @@ def recommendation(severity: str, ctx: dict, threat: dict) -> list:
         names = ", ".join(a["name"] for a in ctx["exposed_assets"])
         recs.append(f"Patch or isolate exposed assets: {names}")
     for c in ctx["related_cves"]:
-        recs.append(f"Prioritize remediation of {c['cve_id']} (CVSS {c['cvss']})")
+        if c.get("in_kev"):
+            action = c.get("required_action") or "Apply vendor mitigation immediately"
+            due = f" [CISA Due Date: {c['due_date']}]" if c.get("due_date") else ""
+            ransom = " [⚠ Known Ransomware Threat]" if c.get("ransomware_campaign") else ""
+            recs.append(f"CISA KEV MANDATE for {c['cve_id']}: {action}{due}{ransom}")
+        else:
+            recs.append(f"Prioritize remediation of {c['cve_id']} (CVSS {c.get('cvss', 'N/A')})")
     if any(t.startswith("T1059") for t in threat.get("techniques", [])):
         recs.append("Review PowerShell / script-interpreter logging on connected endpoints")
     if "T1566" in threat.get("techniques", []):

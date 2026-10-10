@@ -13,7 +13,12 @@ OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "qwen2.5:7b")
 
 def build_prompt(threat: dict, a: dict) -> str:
     techs = ", ".join(f"{t['id']} ({t['name']})" for t in a["attack_techniques"]) or "none"
-    cves = ", ".join(f"{c['cve_id']} CVSS {c['cvss']} {c['affected_product']}" for c in a["related_cves"]) or "none"
+    cve_list = []
+    for c in a["related_cves"]:
+        kev_tag = " [CISA KEV Actively Exploited]" if c.get("in_kev") else ""
+        rw_tag = " [Ransomware]" if c.get("ransomware_campaign") else ""
+        cve_list.append(f"{c['cve_id']} CVSS {c.get('cvss', 'N/A')} {c.get('affected_product', '')}{kev_tag}{rw_tag}")
+    cves = ", ".join(cve_list) or "none"
     assets = ", ".join(x["name"] for x in a["exposed_assets"]) or "none"
     return f"""You are a cybersecurity threat analyst.
 
@@ -44,7 +49,11 @@ def template_analysis(threat: dict, a: dict) -> str:
     chain = " -> ".join(s["label"] for s in a["attack_chain"]) or "not enough data"
     techs = "\n".join(f"- {t['id']} {t['name']} ({t['tactic']})" for t in a["attack_techniques"]) or "- none"
     recs = "\n".join(f"{i}. {r}" for i, r in enumerate(a["recommendations"], 1))
-    cve_txt = (", ".join(c["cve_id"] for c in a["related_cves"])) or "no linked CVEs"
+    cve_parts = []
+    for c in a["related_cves"]:
+        note = " (CISA KEV: known active exploitation)" if c.get("in_kev") else ""
+        cve_parts.append(f"{c['cve_id']}{note}")
+    cve_txt = ", ".join(cve_parts) or "no linked CVEs"
     return f"""THREAT SUMMARY
 {threat['indicator']} is flagged as malicious infrastructure ({threat['confidence']}% confidence){f" associated with {threat['malware']}" if threat.get('malware') else ''}{f" and the campaign '{threat['campaign']}'" if threat.get('campaign') else ''}.
 

@@ -1,0 +1,48 @@
+[
+  {
+    "indicator": "192.0.2.55",
+    "confidence": 90,
+    "malware": "AsyncRAT",
+    "hits": 48,
+    "techniques": ["T1059.001", "T1071", "T1105"],
+    "cves": ["CVE-2023-38831"],
+    "geo": { "country": "Pakistan", "lat": 33.69, "lon": 73.04 },
+    "tags": ["rat", "remote-access"]
+  },
+  {
+    "indicator": "192.0.2.120",
+    "confidence": 75,
+    "malware": "AgentTesla",
+    "hits": 31,
+    "techniques": ["T1566.001", "T1555", "T1056.001"],
+    "geo": { "country": "Mexico", "lat": 19.43, "lon": -99.13 },
+    "tags": ["keylogger", "infostealer"]
+  },
+  {
+    "indicator": "192.0.2.180",
+    "confidence": 60,
+    "hits": 12,
+    "techniques": ["T1078", "T1110"],
+    "geo": { "country": "South Africa", "lat": -33.93, "lon": 18.42 },
+    "tags": ["bruteforce", "rdp"]
+  },
+  {
+    "indicator": "malware-drop.example",
+    "indicator_type": "domain",
+    "confidence": 85,
+    "malware": "AsyncRAT",
+    "hits": 55,
+    "techniques": ["T1105", "T1059.001"],
+    "geo": { "country": "Seychelles", "lat": -4.68, "lon": 55.49 },
+    "tags": ["payload-delivery", "bulletproof-hosting"]
+  },
+  {
+    "indicator": "ab12cd34ef56789012345678abcdef01",
+    "indicator_type": "hash",
+    "confidence": 93,
+    "malware": "AgentTesla",
+    "hits": 22,
+    "techniques": ["T1056.001", "T1555.003"],
+    "tags": ["stealer-binary", "keylogger"]
+  }
+]

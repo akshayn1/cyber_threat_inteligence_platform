@@ -1,0 +1,126 @@
+{
+  "_description": "Phishing & Infostealer IoCs — Credential harvesting campaign with Raccoon Stealer and RedLine payloads",
+  "threats": [
+    {
+      "indicator": "secure-login-verify.example",
+      "indicator_type": "domain",
+      "source": "phishing_feed",
+      "confidence": 93,
+      "severity": "critical",
+      "malware": "Raccoon Stealer",
+      "campaign": "Operation CredHarvest",
+      "hits": 245,
+      "techniques": ["T1566.002", "T1204.001", "T1056.001", "T1555.003"],
+      "cves": [],
+      "geo": { "country": "Turkey", "lat": 41.01, "lon": 28.98 },
+      "tags": ["phishing", "credential-theft", "typosquatting"]
+    },
+    {
+      "indicator": "https://secure-login-verify.example/auth/microsoft365",
+      "indicator_type": "url",
+      "source": "phishing_feed",
+      "confidence": 95,
+      "severity": "critical",
+      "malware": "Raccoon Stealer",
+      "campaign": "Operation CredHarvest",
+      "hits": 189,
+      "techniques": ["T1566.002", "T1204.001"],
+      "cves": [],
+      "geo": { "country": "Turkey", "lat": 41.01, "lon": 28.98 },
+      "tags": ["phishing-url", "o365-lure", "credential-harvester"]
+    },
+    {
+      "indicator": "203.0.113.130",
+      "source": "threat_feed",
+      "confidence": 87,
+      "severity": "high",
+      "malware": "RedLine Stealer",
+      "campaign": "Operation CredHarvest",
+      "hits": 78,
+      "techniques": ["T1071", "T1041", "T1555", "T1539", "T1005"],
+      "cves": [],
+      "geo": { "country": "Moldova", "lat": 47.01, "lon": 28.86 },
+      "tags": ["infostealer", "c2", "maaS"]
+    },
+    {
+      "indicator": "invoice-document-2024.example",
+      "indicator_type": "domain",
+      "source": "osint",
+      "confidence": 81,
+      "severity": "high",
+      "malware": "Raccoon Stealer",
+      "campaign": "Operation CredHarvest",
+      "hits": 112,
+      "techniques": ["T1566.001", "T1204.002", "T1059.005"],
+      "cves": ["CVE-2022-30190"],
+      "geo": { "country": "Panama", "lat": 8.98, "lon": -79.52 },
+      "tags": ["phishing-domain", "macro-lure", "invoice-theme"]
+    },
+    {
+      "indicator": "192.0.2.167",
+      "source": "threat_feed",
+      "confidence": 74,
+      "severity": "high",
+      "malware": "Vidar Stealer",
+      "campaign": null,
+      "hits": 41,
+      "techniques": ["T1555.003", "T1539", "T1005", "T1071"],
+      "cves": [],
+      "geo": { "country": "Kazakhstan", "lat": 51.17, "lon": 71.45 },
+      "tags": ["infostealer", "browser-credential-theft"]
+    },
+    {
+      "indicator": "d4e5f6a7b8c9012345678901234567ab",
+      "indicator_type": "hash",
+      "source": "malware_sandbox",
+      "confidence": 92,
+      "severity": "critical",
+      "malware": "Raccoon Stealer",
+      "campaign": "Operation CredHarvest",
+      "hits": 33,
+      "techniques": ["T1555", "T1056.001", "T1027"],
+      "cves": [],
+      "geo": null,
+      "tags": ["stealer-binary", "packed", "dotnet"]
+    },
+    {
+      "indicator": "198.51.100.55",
+      "source": "honeypot",
+      "confidence": 58,
+      "severity": "medium",
+      "malware": null,
+      "campaign": null,
+      "hits": 15,
+      "techniques": ["T1110.001", "T1078"],
+      "cves": [],
+      "geo": { "country": "Nigeria", "lat": 9.06, "lon": 7.49 },
+      "tags": ["credential-stuffing", "bruteforce"]
+    }
+  ],
+  "cves": [
+    {
+      "id": "CVE-2022-30190",
+      "cve_id": "CVE-2022-30190",
+      "cvss": 7.8,
+      "severity": "high",
+      "affected_product": "Microsoft Support Diagnostic Tool (MSDT)",
+      "description": "Follina: Remote code execution via crafted Office documents leveraging ms-msdt protocol handler."
+    }
+  ],
+  "assets": [
+    {
+      "id": "asset-mail02",
+      "name": "email-gateway-01",
+      "ip": "10.0.1.50",
+      "products": ["Microsoft Exchange", "Microsoft Office"],
+      "importance": 90
+    },
+    {
+      "id": "asset-wks-finance",
+      "name": "finance-workstation-pool",
+      "ip": "10.0.6.0/24",
+      "products": ["Microsoft Office", "Chrome Browser"],
+      "importance": 70
+    }
+  ]
+}

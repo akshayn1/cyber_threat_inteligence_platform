@@ -281,10 +281,26 @@ export default function ThreatDetail({ id }) {
             {a.related_cves.map((c) => (
               <div
                 key={c.cve_id}
-                className="rounded-lg border border-slate-800 bg-slate-900/60 p-2.5 text-xs transition hover:border-slate-700"
+                className={`rounded-lg border p-2.5 text-xs transition ${
+                  c.in_kev
+                    ? "border-amber-500/40 bg-amber-950/20 shadow-[0_0_15px_-3px_rgba(245,158,11,0.15)]"
+                    : "border-slate-800 bg-slate-900/60 hover:border-slate-700"
+                }`}
               >
-                <div className="flex items-center justify-between gap-2">
-                  <span className="font-mono font-bold text-amber-400">{c.cve_id}</span>
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    <span className="font-mono font-bold text-amber-400">{c.cve_id}</span>
+                    {c.in_kev && (
+                      <span className="flex items-center gap-1 rounded border border-amber-500/40 bg-amber-500/15 px-1.5 py-0.2 font-mono text-[9px] font-extrabold uppercase text-amber-300">
+                        ⚡ CISA KEV (Exploited)
+                      </span>
+                    )}
+                    {c.ransomware_campaign && (
+                      <span className="flex items-center gap-1 rounded border border-rose-500/40 bg-rose-500/15 px-1.5 py-0.2 font-mono text-[9px] font-extrabold uppercase text-rose-300">
+                        ☣ Ransomware Linked
+                      </span>
+                    )}
+                  </div>
                   <div className="flex items-center gap-2">
                     <span className="rounded bg-rose-500/20 px-1.5 py-0.5 font-mono text-[10px] font-bold text-rose-300">
                       CVSS {c.cvss}
@@ -295,6 +311,13 @@ export default function ThreatDetail({ id }) {
                   </div>
                 </div>
                 <p className="mt-1.5 text-slate-400 leading-relaxed">{c.description}</p>
+                {c.required_action && (
+                  <div className="mt-2 rounded bg-slate-950/60 p-2 text-[11px] text-amber-200/90 border border-amber-500/20">
+                    <span className="font-bold uppercase tracking-wider text-amber-400">CISA Mandate: </span>
+                    {c.required_action}
+                    {c.due_date && <span className="ml-2 font-mono text-slate-400 font-semibold">(Due: {c.due_date})</span>}
+                  </div>
+                )}
               </div>
             ))}
             {a.exposed_assets.length > 0 && (

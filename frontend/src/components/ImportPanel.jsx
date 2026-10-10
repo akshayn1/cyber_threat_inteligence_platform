@@ -8,6 +8,7 @@ import {
   CheckCircle,
   AlertCircle,
   Loader2,
+  Zap,
 } from "lucide-react";
 
 export default function ImportPanel({ onImported }) {
@@ -95,6 +96,20 @@ export default function ImportPanel({ onImported }) {
           <DownloadCloud className="h-3.5 w-3.5" />
         )}
         <span>Sync NVD CVEs</span>
+      </button>
+
+      {/* Fetch CISA KEV */}
+      <button
+        disabled={isBusy}
+        onClick={() => run("cisa", () => api.collect("cisa"), "CISA KEV")}
+        className="flex items-center gap-1.5 rounded-lg border border-amber-500/50 bg-amber-500/10 px-3 py-1.5 text-xs font-semibold text-amber-300 shadow-sm transition hover:bg-amber-500/20 disabled:opacity-50"
+      >
+        {busyAction === "cisa" ? (
+          <Loader2 className="h-3.5 w-3.5 animate-spin" />
+        ) : (
+          <Zap className="h-3.5 w-3.5 text-amber-400" />
+        )}
+        <span>Sync CISA KEV</span>
       </button>
 
       {/* Fetch Feodo C2 */}

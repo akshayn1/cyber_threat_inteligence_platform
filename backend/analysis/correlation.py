@@ -56,7 +56,9 @@ def _evidence(threat, siblings, cves, exposed, chain) -> list:
     if chain:
         ev.append("Observed tactics: " + " -> ".join(s["label"] for s in chain))
     for c in cves:
-        ev.append(f"Exploits/relates to {c['cve_id']} (CVSS {c['cvss']}) in {c['affected_product']}")
+        kev_note = " [⚡ CISA KEV: Actively Exploited in the Wild]" if c.get("in_kev") else ""
+        rw_note = " [⚠ Ransomware Associated]" if c.get("ransomware_campaign") else ""
+        ev.append(f"Exploits/relates to {c['cve_id']} (CVSS {c.get('cvss', 'N/A')}) in {c.get('affected_product', 'unknown')}{kev_note}{rw_note}")
     for a in exposed:
         ev.append(f"Internal asset '{a['name']}' runs a vulnerable product (importance {a['importance']})")
     return ev

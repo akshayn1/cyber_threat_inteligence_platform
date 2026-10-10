@@ -1,0 +1,114 @@
+{
+  "_description": "Ransomware Campaign IoCs — BlackCat (ALPHV) & REvil infrastructure with associated CVEs and target assets",
+  "threats": [
+    {
+      "indicator": "198.51.100.44",
+      "source": "threat_feed",
+      "confidence": 96,
+      "severity": "critical",
+      "malware": "BlackCat (ALPHV)",
+      "campaign": "Operation DarkVault",
+      "hits": 134,
+      "techniques": ["T1190", "T1486", "T1490", "T1027", "T1059.001"],
+      "cves": ["CVE-2023-27350"],
+      "geo": { "country": "Romania", "lat": 44.43, "lon": 26.10 },
+      "tags": ["ransomware", "double-extortion", "rust-payload"]
+    },
+    {
+      "indicator": "203.0.113.91",
+      "source": "threat_feed",
+      "confidence": 92,
+      "severity": "critical",
+      "malware": "BlackCat (ALPHV)",
+      "campaign": "Operation DarkVault",
+      "hits": 97,
+      "techniques": ["T1021.001", "T1486", "T1490", "T1070"],
+      "cves": ["CVE-2023-27350", "CVE-2021-34527"],
+      "geo": { "country": "Bulgaria", "lat": 42.70, "lon": 23.32 },
+      "tags": ["ransomware", "rdp-bruteforce", "lateral-movement"]
+    },
+    {
+      "indicator": "192.0.2.88",
+      "source": "osint",
+      "confidence": 88,
+      "severity": "high",
+      "malware": "REvil",
+      "campaign": "Operation DarkVault",
+      "hits": 63,
+      "techniques": ["T1190", "T1059.001", "T1486", "T1562"],
+      "cves": ["CVE-2021-30116"],
+      "geo": { "country": "Russia", "lat": 55.75, "lon": 37.62 },
+      "tags": ["ransomware", "supply-chain", "kaseya"]
+    },
+    {
+      "indicator": "https://darkleaks-mirror.example/upload",
+      "indicator_type": "url",
+      "source": "osint",
+      "confidence": 85,
+      "severity": "high",
+      "malware": "BlackCat (ALPHV)",
+      "campaign": "Operation DarkVault",
+      "hits": 28,
+      "techniques": ["T1567", "T1048"],
+      "cves": [],
+      "geo": { "country": "Iceland", "lat": 64.15, "lon": -21.94 },
+      "tags": ["data-leak-site", "exfiltration"]
+    },
+    {
+      "indicator": "c3d5b2f8a1e94d6cb7890123456789ab",
+      "indicator_type": "hash",
+      "source": "malware_sandbox",
+      "confidence": 97,
+      "severity": "critical",
+      "malware": "BlackCat (ALPHV)",
+      "campaign": "Operation DarkVault",
+      "hits": 45,
+      "techniques": ["T1486", "T1027.002", "T1059.001"],
+      "cves": [],
+      "geo": null,
+      "tags": ["ransomware-binary", "packed", "rust"]
+    }
+  ],
+  "cves": [
+    {
+      "id": "CVE-2023-27350",
+      "cve_id": "CVE-2023-27350",
+      "cvss": 9.8,
+      "severity": "critical",
+      "affected_product": "PaperCut MF/NG",
+      "description": "Improper access control in PaperCut allows unauthenticated remote code execution. Actively exploited by Cl0p and BlackCat ransomware."
+    },
+    {
+      "id": "CVE-2021-34527",
+      "cve_id": "CVE-2021-34527",
+      "cvss": 8.8,
+      "severity": "high",
+      "affected_product": "Microsoft Windows Print Spooler",
+      "description": "PrintNightmare: Remote code execution via Windows Print Spooler, exploited to gain SYSTEM privileges."
+    },
+    {
+      "id": "CVE-2021-30116",
+      "cve_id": "CVE-2021-30116",
+      "cvss": 9.8,
+      "severity": "critical",
+      "affected_product": "Kaseya VSA",
+      "description": "Authentication bypass in Kaseya VSA, used by REvil in mass supply-chain ransomware attacks."
+    }
+  ],
+  "assets": [
+    {
+      "id": "asset-print01",
+      "name": "print-server-hq",
+      "ip": "10.0.3.15",
+      "products": ["PaperCut MF/NG"],
+      "importance": 65
+    },
+    {
+      "id": "asset-dc01",
+      "name": "domain-controller-01",
+      "ip": "10.0.0.5",
+      "products": ["Microsoft Windows Print Spooler"],
+      "importance": 98
+    }
+  ]
+}

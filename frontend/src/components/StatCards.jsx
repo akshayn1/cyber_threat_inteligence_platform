@@ -23,7 +23,9 @@ export default function StatCards({ stats }) {
     {
       label: "Monitored CVEs",
       value: stats?.total_cves,
-      caption: "Active vulnerability mappings",
+      caption: stats?.cisa_kev_count
+        ? `${stats.cisa_kev_count} exploited in CISA KEV`
+        : "Active vulnerability mappings",
       color: "text-amber-400",
       bgIcon: "bg-amber-500/10 text-amber-400 border-amber-500/20",
       accentBorder: "border-amber-500/30",

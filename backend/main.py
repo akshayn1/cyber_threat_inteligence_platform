@@ -34,6 +34,7 @@ def _ingest(bundle: dict) -> dict:
     for c in bundle.get("cves", []):
         c.setdefault("cve_id", c.get("id"))
         c["id"] = c["cve_id"]
+        c = cve_collector.enrich_cve_with_kev(c)
         store.upsert("cves", c); n["cves"] += 1
     for a in bundle.get("assets", []):
         a.setdefault("id", "asset-" + uuid.uuid4().hex[:8])
@@ -116,10 +117,15 @@ def stats():
     sev = Counter(i["analysis"]["severity"] for i in items)
     campaigns = {i.get("campaign") for i in items if i.get("campaign")}
     tech = Counter(t["id"] for i in items for t in i["analysis"]["attack_techniques"])
+    all_cves = store.list("cves")
+    kev_count = sum(1 for c in all_cves if c.get("in_kev"))
+    ransomware_count = sum(1 for c in all_cves if c.get("ransomware_campaign"))
     return {
         "total_threats": len(items),
         "critical": sev.get("critical", 0),
-        "total_cves": len(store.list("cves")),
+        "total_cves": len(all_cves),
+        "cisa_kev_count": kev_count,
+        "ransomware_cves": ransomware_count,
         "campaigns": len(campaigns),
         "by_severity": [{"severity": s, "count": sev.get(s, 0)} for s in ("critical", "high", "medium", "low")],
         "top_techniques": [{"id": k, "name": mitre.technique_info(k)["name"], "count": v}
@@ -193,6 +199,9 @@ def collect(source: str):
         if source == "cve":
             items = cve_collector.fetch_recent()
             return {"collected": _ingest({"cves": items})}
+        if source in ("cisa", "kev"):
+            items = cve_collector.load_cisa_kev(limit=100)
+            return {"collected": _ingest({"cves": items})}
         if source == "feodo":
             items = threat_collector.fetch_feodo()
             return {"collected": _ingest({"threats": items})}
@@ -200,10 +209,14 @@ def collect(source: str):
             return {"techniques_loaded": mitre.fetch_full()}
     except Exception as e:  # network / upstream errors
         raise HTTPException(502, f"Collector '{source}' failed: {e.__class__.__name__}: {e}")
-    raise HTTPException(404, "Unknown source (use cve | feodo | mitre)")
+    raise HTTPException(404, "Unknown source (use cve | cisa | feodo | mitre)")
 
 
 @app.on_event("startup")
 def auto_seed():
     if not store.list("threats"):
         _ingest(threat_collector.load_sample())
+    else:
+        # Re-enrich stored CVEs with KEV flags if present
+        for c in store.list("cves"):
+            store.upsert("cves", cve_collector.enrich_cve_with_kev(c))
